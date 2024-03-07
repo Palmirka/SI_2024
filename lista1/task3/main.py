@@ -1,26 +1,25 @@
 import random
 import numpy as np
 
-points = {'poker': 100,
-          'quad': 90,
-          'full': 80,
-          'color': 70,
-          'straight': 60,
-          'triple': 50,
-          'pairs': 40,
-          'pair': 30,
-          'higher': 20}
+points = {'poker': 20,
+          'straight': 8,
+          'quad': 7,
+          'full': 6,
+          'flush': 5,
+          'triple': 3,
+          'pairs': 2,
+          'pair': 1}
 
 
 class Player:
-    def __init__(self, figurant):
-        self.cards = np.empty(5, (int, int))
+    def __init__(self, figurant: bool):
+        self.cards = []
         self.figurant = figurant
 
     def random_card(self):
         if self.figurant:
             return random.randint(11, 14), random.randint(1, 4)
-        random.randint(2, 10), random.randint(1, 4)
+        return random.randint(2, 10), random.randint(1, 4)
 
     def random_cards(self, in_use):
         for i in range(5):
@@ -28,12 +27,60 @@ class Player:
             while card in in_use:
                 card = self.random_card()
             in_use.append(card)
-            self.cards[i] = card
-        self.cards.sort()
+            self.cards.append(card)
 
     def rate_hand(self):
-        pass
+        self.cards.sort()
+        suits = [card[1] for card in self.cards]
+        ranks = [card[0] for card in self.cards]
+        counts = [ranks.count(rank) for rank in set(ranks)]
+
+        if (len(set(suits))) == 1:
+            if ranks == [10, 11, 12, 13, 14]:
+                return points['poker']
+            elif ranks[0] - ranks[-1] == 4:
+                return points['straight']
+            return points['flush']
+
+        if 4 in counts:
+            return points['quad']
+        elif 3 in counts and 2 in counts:
+            return points['full']
+        elif 3 in counts:
+            return points['triple']
+        elif counts.count(2) == 2:
+            return points['pairs']
+        elif 2 in counts:
+            return points['pair']
+        return 0
 
 
-figurant = Player(True)
-blotkarz = Player(False)
+def play(remove_cards):
+    figurant = Player(True)
+    figurant.random_cards(in_use=[])
+    f_points = figurant.rate_hand()
+
+    blotkarz = Player(False)
+    blotkarz.random_cards(in_use=remove_cards)
+    b_points = blotkarz.rate_hand()
+
+    return b_points > f_points
+
+
+def all_of_value(num: int):
+    return (num, 0), (num, 1), (num, 2), (num, 3)
+
+
+def calculate_win_rate(figurant: bool, iters: int, remove_cards):
+    results = [play(remove_cards.copy()) for _ in range(iters)]
+    return results.count(not figurant) / iters
+
+
+weakest_3 = [all_of_value(2), all_of_value(3), all_of_value(4)]
+weakest_5 = [all_of_value(2), all_of_value(3), all_of_value(4), all_of_value(5), all_of_value(6)]
+weakest_7 = [all_of_value(2), all_of_value(3), all_of_value(4), all_of_value(5), all_of_value(6), all_of_value(7), all_of_value(8)]
+
+print("All cards:", calculate_win_rate(False, 1000, []))
+print("All cards:", calculate_win_rate(False, 1000, weakest_3))
+print("All cards:", calculate_win_rate(False, 1000, weakest_5))
+print("All cards:", calculate_win_rate(False, 1000, weakest_7))
