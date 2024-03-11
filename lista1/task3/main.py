@@ -1,5 +1,4 @@
 import random
-import numpy as np
 
 points = {'poker': 20,
           'straight': 8,
@@ -68,19 +67,25 @@ def play(remove_cards):
 
 
 def all_of_value(num: int):
-    return (num, 0), (num, 1), (num, 2), (num, 3)
+    return [(num, 1), (num, 2), (num, 3), (num, 4)]
 
 
-def calculate_win_rate(figurant: bool, iters: int, remove_cards):
+def calculate_win_rate(iters: int, remove_cards):
     results = [play(remove_cards.copy()) for _ in range(iters)]
-    return results.count(not figurant) / iters
+    return results.count(True) / iters
 
 
-weakest_3 = [all_of_value(2), all_of_value(3), all_of_value(4)]
-weakest_5 = [all_of_value(2), all_of_value(3), all_of_value(4), all_of_value(5), all_of_value(6)]
-weakest_7 = [all_of_value(2), all_of_value(3), all_of_value(4), all_of_value(5), all_of_value(6), all_of_value(7), all_of_value(8)]
+weakest_3 = [] + all_of_value(2) + all_of_value(3) + all_of_value(4)
+weakest_4 = weakest_3 + all_of_value(5)
+weakest_5 = weakest_4 + all_of_value(6)
+weakest_6 = weakest_5 + all_of_value(7)
+weakest_7 = weakest_6 + all_of_value(8)
 
-print("All cards:", calculate_win_rate(False, 1000, []))
-print("All cards:", calculate_win_rate(False, 1000, weakest_3))
-print("All cards:", calculate_win_rate(False, 1000, weakest_5))
-print("All cards:", calculate_win_rate(False, 1000, weakest_7))
+print("All cards:", calculate_win_rate(1000, []))
+print("Without 2 - 4:", calculate_win_rate(1000, weakest_3))
+print("Without 2 - 5:", calculate_win_rate(1000, weakest_4))
+print("Without 2 - 6:", calculate_win_rate(1000, weakest_5))
+print("Without 2 - 7:", calculate_win_rate(1000, weakest_6))
+print("Without 2 - 8:", calculate_win_rate(1000, weakest_7))
+
+#print(blotkarz_cards())
