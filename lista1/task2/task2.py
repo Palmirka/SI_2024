@@ -10,7 +10,6 @@ def get_words_set(filename: str):
 
 def add_spaces(line: str, res, pos: int, results: Dict[int, tuple[int, list[int]]]) -> \
         (Dict[int, tuple[int, list[int]]], tuple[int, list[int]]):
-
     if pos in results:
         return results, (results[pos][0], results[pos][1].copy())
 
@@ -21,16 +20,12 @@ def add_spaces(line: str, res, pos: int, results: Dict[int, tuple[int, list[int]
         if pos + i > len(line):
             break
 
-        word = line[pos:pos+i]
+        word = line[pos:pos + i]
         if word in words:
             val = i ** 2
             if pos + i == len(line):
-                if val > best:
-                    best = val
-                    spaces = []
-
-            if pos+i > len(line):
-                break
+                best = val
+                spaces = []
 
             results, res = add_spaces(line=line, res=res, pos=pos + i, results=results)
             if res[0] > -1:
@@ -38,7 +33,7 @@ def add_spaces(line: str, res, pos: int, results: Dict[int, tuple[int, list[int]
                 if val > best:
                     best = val
                     spaces = res[1]
-                    spaces.append(pos+i)
+                    spaces.append(pos + i)
 
     results[pos] = (best, spaces.copy())
     return results, (best, spaces)

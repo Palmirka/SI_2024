@@ -10,7 +10,6 @@ def get_data(filename):
 
 def opt_dist(data) -> int:
     pref = [0]
-    print(data['fields'])
     [pref.append(pref[-1] + num) for num in data['fields']]
     count = sum(data['fields'])
     longest = len(data['fields']) + 1
@@ -22,7 +21,8 @@ def opt_dist(data) -> int:
     return longest
 
 
-data = get_data('test.txt')
-for d in data:
-    print(opt_dist(d))
+data = get_data('zad4_input.txt')
+res = [str(opt_dist(d)) for d in data]
+with open('zad4_output.txt', 'w', encoding='utf-8') as f:
+    f.writelines(res)
 
