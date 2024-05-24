@@ -1,4 +1,4 @@
-from typing import Set, Dict
+from typing import Dict
 N = 30
 
 
@@ -61,4 +61,4 @@ def save(filename, res):
 
 words = get_words_set('words_for_ai1.txt')
 res = run('pan_tadeusz_bez_spacji.txt')
-save('results2.txt', res)
+save('results.txt', res)

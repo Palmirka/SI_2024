@@ -81,8 +81,8 @@ class Chess:
             x, y = self.pawns[0]['position']
             ys = [y - 1, y, y + 1]
             xs = [x - 1, x, x + 1]
+            banned_moves += self.positions_of(xs, ys)
             banned_moves += self.possible_moves(self.pawns[1])
-
         return set(banned_moves)
 
     def is_checkmate(self, obj):
@@ -98,7 +98,6 @@ class Chess:
         visited.add(initial_state)
 
         while queue:
-
             state, moves = queue.popleft()
             if self.is_checkmate(self.pawns[2]):
                 return visited
@@ -106,7 +105,7 @@ class Chess:
             # Generate possible moves for the white king and tower
             for i in range(3):
                 if self.pawns[i]['color'] == self.turn:
-                    #print(visited)
+                    # print(visited)
                     for move in self.possible_moves(self.pawns[i]):
                         print(self.pawns)
                         new_pawns = self.pawns.copy()

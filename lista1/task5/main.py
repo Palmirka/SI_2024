@@ -75,7 +75,7 @@ class Game:
     def _flip(value):
         return -value + 1
 
-    def _check_score(self, x, y) -> int:
+    def check_score(self, x, y) -> int:
         old_score = self.column_dists[x] + self.row_dists[y]
         column = self._get_column(x)
         row = self._get_row(y)
@@ -90,16 +90,16 @@ class Game:
         line_id = random.choice(self.bad_lines)
         if line_id > 0:
             x = line_id - 1
-            y = self._find_best_index(x, range(self.y), is_row=True)
+            y = self.find_best_index(x, range(self.y), is_row=True)
         else:
             y = -line_id - 1
-            x = self._find_best_index(y, range(self.x), is_row=False)
+            x = self.find_best_index(y, range(self.x), is_row=False)
         self.board[x][y] = self._flip(self.board[x][y])
         self._update_column_score(x)
         self._update_row_score(y)
 
-    def _find_best_index(self, fixed_coord, iterable, is_row):
-        scores = [self._check_score(fixed_coord, coord) if is_row else self._check_score(coord, fixed_coord) for coord
+    def find_best_index(self, fixed_coord, iterable, is_row):
+        scores = [self.check_score(fixed_coord, coord) if is_row else self.check_score(coord, fixed_coord) for coord
                   in iterable]
         best_score = min(scores)
         best_indices = [i for i, score in enumerate(scores) if score == best_score]
